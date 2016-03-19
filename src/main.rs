@@ -1,4 +1,5 @@
 use std::io::{self, Read};
+use std::env;
 
 fn get<T>(v: &Vec<Vec<T>>, y: i32, x: i32) -> Option<&T> {
     if x >= 0 && y >= 0 {
@@ -55,22 +56,34 @@ fn read_state() -> Vec<Vec<bool>> {
 }
 
 fn main() {
+    let args: Vec<String> = env::args().collect();
+    let iterations: u32 = match args.get(1) {
+        Some(string) => string.parse().expect("iteration count must be number"),
+        None => 1,
+    };
+
     let initial_state = read_state();
 
-    let mut new_state = initial_state.to_vec();
+    let mut previous_state = initial_state;
 
-    for (y, line) in initial_state.iter().enumerate() {
-        for (x, cell) in line.iter().enumerate() {
+    for _iteration in 0..iterations {
+        let mut new_state = previous_state.to_vec();
 
-            let new_cell = match (*cell, alive_neighbor_count(&initial_state, y, x)) {
-                (true, 2) => true,
-                (_, 3) => true,
-                (_, _) => false,
-            };
+        for (y, line) in previous_state.iter().enumerate() {
+            for (x, cell) in line.iter().enumerate() {
 
-            new_state[y as usize][x as usize] = new_cell;
+                let new_cell = match (*cell, alive_neighbor_count(&previous_state, y, x)) {
+                    (true, 2) => true,
+                    (_, 3) => true,
+                    (_, _) => false,
+                };
+
+                new_state[y as usize][x as usize] = new_cell;
+            }
         }
+
+        previous_state = new_state;
     }
 
-    print_state(&new_state);
+    print_state(&previous_state);
 }
