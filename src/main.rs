@@ -55,6 +55,25 @@ fn read_state() -> Vec<Vec<bool>> {
     v
 }
 
+fn next_state(previous_state: &Vec<Vec<bool>>) -> Vec<Vec<bool>> {
+    let mut new_state = previous_state.to_vec();
+
+    for (y, line) in previous_state.iter().enumerate() {
+        for (x, cell) in line.iter().enumerate() {
+
+            let new_cell = match (*cell, alive_neighbor_count(&previous_state, y, x)) {
+                (true, 2) => true,
+                (_, 3) => true,
+                (_, _) => false,
+            };
+
+            new_state[y as usize][x as usize] = new_cell;
+        }
+    }
+
+    new_state
+}
+
 fn main() {
     let args: Vec<String> = env::args().collect();
     let iterations: u32 = match args.get(1) {
@@ -65,20 +84,7 @@ fn main() {
     let mut previous_state = read_state();
 
     for _iteration in 0..iterations {
-        let mut new_state = previous_state.to_vec();
-
-        for (y, line) in previous_state.iter().enumerate() {
-            for (x, cell) in line.iter().enumerate() {
-
-                let new_cell = match (*cell, alive_neighbor_count(&previous_state, y, x)) {
-                    (true, 2) => true,
-                    (_, 3) => true,
-                    (_, _) => false,
-                };
-
-                new_state[y as usize][x as usize] = new_cell;
-            }
-        }
+        let new_state = next_state(&previous_state);
 
         previous_state = new_state;
     }
