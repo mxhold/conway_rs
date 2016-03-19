@@ -62,9 +62,7 @@ fn main() {
         None => 1,
     };
 
-    let initial_state = read_state();
-
-    let mut previous_state = initial_state;
+    let mut previous_state = read_state();
 
     for _iteration in 0..iterations {
         let mut new_state = previous_state.to_vec();
