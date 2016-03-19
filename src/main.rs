@@ -1,3 +1,5 @@
+use std::io::{self, Read};
+
 fn get<T>(v: &Vec<Vec<T>>, y: i32, x: i32) -> Option<&T> {
     if x >= 0 && y >= 0 {
         match &v.get(y as usize) {
@@ -34,12 +36,26 @@ fn print_state(v: &Vec<Vec<bool>>) {
     }
 }
 
+fn read_state() -> Vec<Vec<bool>> {
+    let mut buffer = String::new();
+
+    io::stdin().read_to_string(&mut buffer).expect("couldn't read from stdin");
+
+    let mut v = vec![];
+
+    for line in buffer.lines() {
+        let mut row = vec![];
+        for cell in line.trim().bytes() {
+            row.push(cell == b'X');
+        }
+        v.push(row);
+    }
+
+    v
+}
+
 fn main() {
-    let initial_state = vec![
-        vec![false, true, false],
-        vec![false, true, false],
-        vec![false, true, false],
-    ];
+    let initial_state = read_state();
 
     let mut new_state = initial_state.to_vec();
 
