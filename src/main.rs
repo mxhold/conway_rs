@@ -27,9 +27,9 @@ fn print_state(v: &Vec<Vec<bool>>) {
     for line in v {
         for &cell in line {
             if cell {
-                print!("X");
+                print!("1");
             } else {
-                print!(".");
+                print!("0");
             }
         }
         print!("\n");
@@ -46,7 +46,7 @@ fn read_state() -> Vec<Vec<bool>> {
     for line in buffer.lines() {
         let mut row = vec![];
         for cell in line.trim().bytes() {
-            row.push(cell == b'X');
+            row.push(cell == b'1');
         }
         v.push(row);
     }
